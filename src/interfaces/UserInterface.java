@@ -37,15 +37,7 @@ public interface UserInterface extends Remote {
      * @throws java.rmi.RemoteException 
      */
     public String getPassword() throws RemoteException;
-    
-    /**
-     * @param username
-     * @param plainPassword
-     * @return boolean
-     * @throws java.rmi.RemoteException
-     */
-    public boolean authenticate(String username, String plainPassword) throws RemoteException;
-    
+ 
     /**
      * @return ArrayList
      * @throws java.rmi.RemoteException
