@@ -39,4 +39,12 @@ public interface UserServiceInterface extends Remote {
      * @throws java.rmi.RemoteException 
      */
     public UserInterface getUser(String userName) throws RemoteException, Exception;
+    
+    /**
+     * 
+     * @param answer
+     * @param request
+     * @throws RemoteException 
+     */
+    public UserInterface answerToContactRequest(boolean answer, ContactRequestInterface request) throws RemoteException;
 }

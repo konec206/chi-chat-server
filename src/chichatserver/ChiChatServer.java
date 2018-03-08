@@ -55,6 +55,19 @@ public class ChiChatServer {
                     System.out.println(request.toString());
                 }
                 
+                Thread.sleep(1000);
+                
+                System.out.println("[TEST ACCEPT CONTACT REQUEST]");
+                
+                user = userServiceInterface.answerToContactRequest(true, user.getContactRequest().get(0));
+                
+                System.out.println("[TEST ACCEPT CONTACT REQUEST] Contact requests : " + user.getContactRequest().size());
+                System.out.println("[TEST ACCEPT CONTACT REQUEST] Contact : " + user.getContacts().size());
+                
+                for(UserInterface contact : user.getContacts()) {
+                    System.out.println("Contact : " + contact.getFirstName() + " " + contact.getName());
+                }
+                
             } catch (Exception ex) {
                 Logger.getLogger(ChiChatServer.class.getName()).log(Level.SEVERE, null, ex);
             }
