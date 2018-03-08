@@ -5,6 +5,8 @@
  */
 package chichatserver;
 
+import interfaces.ContactRequestInterface;
+import interfaces.UserInterface;
 import interfaces.UserServiceInterface;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -38,7 +40,24 @@ public class ChiChatServer {
         try {
             userServiceInterface = (UserServiceInterface) bdRegistry.lookup("userService");
             System.out.println("[SERVER] UserService registered...");
-            System.out.println("[TEST AUTHENTICATE] " + userServiceInterface.authenticateUser("root", "root"));
+            System.out.println("[TEST AUTHENTICATE] " + userServiceInterface.authenticateUser("root1", "root"));
+            try {
+                System.out.println("[TEST CONTACT REQUEST] root1 -> root2");
+                if (userServiceInterface.sendContactRequest("root1", "root2"))
+                    System.out.println("[TEST CONTACT REQUEST] A contactRequest has been created");
+                
+                System.out.println("[TEST GET USER]");
+                UserInterface user = userServiceInterface.getUser("root2");
+                System.out.println("Fetched user : " + user.getFirstName() + " " + user.getName());
+                
+                System.out.println("[TEST GET USER] Display of contactRequests : " + user.getContactRequest().size());  
+                for(ContactRequestInterface request : user.getContactRequest()) {
+                    System.out.println(request.toString());
+                }
+                
+            } catch (Exception ex) {
+                Logger.getLogger(ChiChatServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (NotBoundException | AccessException ex) {
             Logger.getLogger(ChiChatServer.class.getName()).log(Level.SEVERE, null, ex);
         }

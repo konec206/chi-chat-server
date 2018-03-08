@@ -37,7 +37,7 @@ public interface UserInterface extends Remote {
      * @throws java.rmi.RemoteException 
      */
     public String getPassword() throws RemoteException;
- 
+    
     /**
      * @return ArrayList
      * @throws java.rmi.RemoteException
@@ -55,4 +55,22 @@ public interface UserInterface extends Remote {
      * @throws java.rmi.RemoteException 
      */
     public void removeContact(UserInterface contact) throws RemoteException;
+    
+    /**
+     * @return
+     * @throws RemoteException 
+     */
+    public ArrayList<ContactRequestInterface> getContactRequest() throws RemoteException;
+    
+    /**
+     * @param contactRequest
+     * @throws RemoteException 
+     */
+    public void addContactRequest(ContactRequestInterface contactRequest) throws RemoteException;
+    
+    /**
+     * @param contactRequest
+     * @throws RemoteException 
+     */
+    public void removeContactRequest(ContactRequestInterface contactRequest) throws RemoteException;
 }
