@@ -24,13 +24,12 @@ public interface UserServiceInterface extends Remote {
     
     /**
      * 
-     * @param senderUserName
-     * @param receiverUserName
+     * @param request
      * @return
      * @throws RemoteException
      * @throws Exception 
      */
-    public boolean sendContactRequest(String senderUserName, String receiverUserName) throws RemoteException, Exception;
+    public UserInterface sendContactRequest(ContactRequestInterface request) throws RemoteException, Exception;
     
     /**
      * 
@@ -44,7 +43,21 @@ public interface UserServiceInterface extends Remote {
      * 
      * @param answer
      * @param request
+     * @return 
      * @throws RemoteException 
      */
     public UserInterface answerToContactRequest(boolean answer, ContactRequestInterface request) throws RemoteException;
+    
+    /**
+     * 
+     * @param username
+     * @param name
+     * @param firstName
+     * @param plainPassword
+     * @return
+     * @throws RemoteException 
+     */
+    public UserInterface createUser(String username, String name, String firstName, String plainPassword) throws RemoteException;
+    
+    
 }

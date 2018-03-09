@@ -19,6 +19,9 @@ import java.util.logging.Logger;
  */
 public class ContactRequest implements ContactRequestInterface, Serializable {
     
+    //Test
+    private static final long serialVersionUID = 198144564964678012L;
+    
     private User sender;
     private User receiver;
     private Date dateCreated;
@@ -31,9 +34,9 @@ public class ContactRequest implements ContactRequestInterface, Serializable {
      * @param dateCreated 
      * @throws java.rmi.RemoteException 
      */
-    public ContactRequest(User sender, User receiver, Date dateCreated) throws RemoteException {
-        this.sender = sender;
-        this.receiver = receiver;
+    public ContactRequest(UserInterface sender, UserInterface receiver, Date dateCreated) throws RemoteException {
+        this.sender = new User(sender);
+        this.receiver = new User(receiver);
         this.dateCreated = dateCreated;
         this.status = CONTACT_REQUEST_STATUS_SENT;
     }
