@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * @author thibault
  */
 public interface UserInterface extends Remote {
+    
     /**
      * @return String
      * @throws java.rmi.RemoteException

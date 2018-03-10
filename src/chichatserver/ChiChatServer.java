@@ -15,6 +15,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -44,6 +45,17 @@ public class ChiChatServer {
         try {
             userServiceInterface = (UserServiceInterface) bdRegistry.lookup("userService");
             System.out.println("[SERVER] UserService registered...");
+            
+            //Just for the tests
+            ArrayList<UserInterface> users = new ArrayList();
+            users.add(new User("root1", "fake", "user", "root"));
+            users.add(new User("root2", "fake", "user", "root"));
+            users.add(new User("root3", "fake", "user", "root"));
+            users.add(new User("root4", "fake", "user", "root"));
+            users.add(new User("root5", "fake", "user", "root"));
+            users.add(new User("root6", "fake", "user", "root"));
+            
+            userServiceInterface.initUserRepository(users);
 
             Scanner sc = new Scanner(System.in);
             System.out.println("[TEST] Please authenticate (authentication gonna be client side) : ");

@@ -22,8 +22,8 @@ public class ContactRequest implements ContactRequestInterface, Serializable {
     //Test
     private static final long serialVersionUID = 198144564964678012L;
     
-    private User sender;
-    private User receiver;
+    private UserInterface sender;
+    private UserInterface receiver;
     private Date dateCreated;
     private int status;
 
@@ -35,8 +35,8 @@ public class ContactRequest implements ContactRequestInterface, Serializable {
      * @throws java.rmi.RemoteException 
      */
     public ContactRequest(UserInterface sender, UserInterface receiver, Date dateCreated) throws RemoteException {
-        this.sender = new User(sender);
-        this.receiver = new User(receiver);
+        this.sender = sender;
+        this.receiver = receiver;
         this.dateCreated = dateCreated;
         this.status = CONTACT_REQUEST_STATUS_SENT;
     }
@@ -82,7 +82,7 @@ public class ContactRequest implements ContactRequestInterface, Serializable {
      * @param sender 
      */
     @Override
-    public void setSender(User sender) throws RemoteException {
+    public void setSender(UserInterface sender) throws RemoteException {
         this.sender = sender;
     }
 
@@ -91,7 +91,7 @@ public class ContactRequest implements ContactRequestInterface, Serializable {
      * @param receiver 
      */
     @Override
-    public void setReceiver(User receiver) throws RemoteException {
+    public void setReceiver(UserInterface receiver) throws RemoteException {
         this.receiver = receiver;
     }
 

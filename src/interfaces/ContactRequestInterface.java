@@ -5,7 +5,6 @@
  */
 package interfaces;
 
-import entity.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Date;
@@ -14,7 +13,7 @@ import java.util.Date;
  *
  * @author thibault
  */
-public interface ContactRequestInterface extends Remote{
+public interface ContactRequestInterface extends Remote {
     
     //Status
     public static int CONTACT_REQUEST_STATUS_SENT = 0;
@@ -56,14 +55,14 @@ public interface ContactRequestInterface extends Remote{
      * @param sender
      * @throws java.rmi.RemoteException
      */
-    public void setSender(User sender)  throws RemoteException;
+    public void setSender(UserInterface sender)  throws RemoteException;
     
     /**
      * 
      * @param receiver
      * @throws java.rmi.RemoteException
      */
-    public void setReceiver(User receiver)  throws RemoteException;
+    public void setReceiver(UserInterface receiver)  throws RemoteException;
     
     /**
      * 

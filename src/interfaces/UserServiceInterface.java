@@ -7,12 +7,21 @@ package interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
  * @author thibault
  */
 public interface UserServiceInterface extends Remote {
+    
+    /**
+     * 
+     * @param users
+     * @throws RemoteException 
+     */
+    public void initUserRepository(ArrayList<UserInterface> users) throws RemoteException;
+
     /**
      * 
      * @param username
@@ -50,14 +59,8 @@ public interface UserServiceInterface extends Remote {
     
     /**
      * 
-     * @param username
-     * @param name
-     * @param firstName
-     * @param plainPassword
      * @return
      * @throws RemoteException 
      */
-    public UserInterface createUser(String username, String name, String firstName, String plainPassword) throws RemoteException;
-    
-    
+    public UserInterface createUser(UserInterface user) throws RemoteException;
 }

@@ -10,6 +10,7 @@ import interfaces.UserInterface;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import utils.Security;
 
 /**
  *
@@ -30,7 +31,7 @@ public class User implements UserInterface, Serializable {
         this.userName = username;
         this.name = name;
         this.firstName = firstName;
-        this.password = plainPassword;
+        this.password = Security.encodePassword(plainPassword);
         this.contacts = new ArrayList<>();
         this.contactRequests = new ArrayList<>();
     }
