@@ -18,8 +18,6 @@ import java.util.logging.Logger;
  * @author thibault
  */
 public class ContactRequest implements ContactRequestInterface, Serializable {
-    
-    //Test
     private static final long serialVersionUID = 198144564964678012L;
     
     private UserInterface sender;

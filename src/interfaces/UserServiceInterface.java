@@ -33,12 +33,11 @@ public interface UserServiceInterface extends Remote {
     
     /**
      * 
-     * @param request
-     * @return
+     * @param request 
      * @throws RemoteException
      * @throws Exception 
      */
-    public UserInterface sendContactRequest(ContactRequestInterface request) throws RemoteException, Exception;
+    public void sendContactRequest(ContactRequestInterface request) throws RemoteException, Exception;
     
     /**
      * 
@@ -59,8 +58,9 @@ public interface UserServiceInterface extends Remote {
     
     /**
      * 
+     * @param user
      * @return
      * @throws RemoteException 
      */
-    public UserInterface createUser(UserInterface user) throws RemoteException;
+    public UserInterface createUser(UserInterface user) throws RemoteException, Exception;
 }

@@ -5,9 +5,12 @@
  */
 package chichatserver;
 
+import entity.Chat;
 import entity.ContactRequest;
+import entity.Message;
 import entity.User;
 import interfaces.ContactRequestInterface;
+import interfaces.MessageInterface;
 import interfaces.UserInterface;
 import interfaces.UserServiceInterface;
 import java.rmi.AccessException;
@@ -45,7 +48,7 @@ public class ChiChatServer {
         try {
             userServiceInterface = (UserServiceInterface) bdRegistry.lookup("userService");
             System.out.println("[SERVER] UserService registered...");
-            
+
             //Just for the tests
             ArrayList<UserInterface> users = new ArrayList();
             users.add(new User("root1", "fake", "user", "root"));
@@ -54,7 +57,7 @@ public class ChiChatServer {
             users.add(new User("root4", "fake", "user", "root"));
             users.add(new User("root5", "fake", "user", "root"));
             users.add(new User("root6", "fake", "user", "root"));
-            
+
             userServiceInterface.initUserRepository(users);
 
             Scanner sc = new Scanner(System.in);
@@ -75,18 +78,16 @@ public class ChiChatServer {
                 try {
                     System.out.print("Username to request :\n> ");
                     String usernameToRequest = sc.nextLine();
-                    
+
                     UserInterface userToRequest = userServiceInterface.getUser(usernameToRequest);
-                    
+
                     System.out.println("[TEST CONTACT REQUEST] " + userConnected.getUsername() + " --> " + userToRequest.getUsername());
 
                     ContactRequest requestToSend = new ContactRequest(userConnected, userToRequest, new Date());
-                    
-                    userToRequest = userServiceInterface.sendContactRequest(requestToSend);
-                    
-                    if (userToRequest != null) {
-                        System.out.println("[TEST CONTACT REQUEST] A contactRequest has been created");                        
-                    }                  
+
+                    userServiceInterface.sendContactRequest(requestToSend);
+
+                    System.out.println("[TEST CONTACT REQUEST] A contactRequest has been created");
 
                     System.out.println("[TEST GET USER] Display of " + userToRequest.getUsername() + " --> contactRequests : " + userToRequest.getContactRequest().size());
                     for (ContactRequestInterface request : userToRequest.getContactRequest()) {
@@ -97,13 +98,51 @@ public class ChiChatServer {
 
                     System.out.println("[TEST ACCEPT CONTACT REQUEST]");
 
-                    userToRequest = userServiceInterface.answerToContactRequest(true, userToRequest.getContactRequest().get(0));
+                    userToRequest = userServiceInterface.answerToContactRequest(true, requestToSend);
 
                     System.out.println("[TEST ACCEPT CONTACT REQUEST] Contact requests : " + userToRequest.getContactRequest().size());
                     System.out.println("[TEST ACCEPT CONTACT REQUEST] Contact : " + userToRequest.getContacts().size());
 
-                    for (UserInterface contact : userToRequest.getContacts()) {
-                        System.out.println("Contact : " + contact.getFirstName() + " " + contact.getName());
+                    if (userToRequest.getContacts().size() > 0) {
+                        for (UserInterface contact : userToRequest.getContacts()) {
+                            System.out.println("Contact : " + contact.getFirstName() + " " + contact.getName());
+                        }
+                    }
+
+                    //Test Register
+                    System.out.print("[TEST REGISTER USER] Please register :\nUser name :\n> ");
+                    String newUsername = sc.nextLine();
+                    System.out.print("Name :\n> ");
+                    String name = sc.nextLine();
+                    System.out.print("FirstName :\n> ");
+                    String firstname = sc.nextLine();
+                    System.out.print("Password :\n> ");
+                    String plainPassword = sc.nextLine();
+
+                    try {
+                        userServiceInterface.createUser(new User(newUsername, name, firstname, plainPassword));
+
+                        userConnected = userServiceInterface.getUser(newUsername);
+                        System.out.print("Send message to :\n> ");
+                        usernameToRequest = sc.nextLine();
+                        userToRequest = userServiceInterface.getUser(usernameToRequest);
+
+                        System.out.print(">> ");
+                        String message = sc.nextLine();
+
+                        Chat chat = new Chat();
+                        chat.addUser(userToRequest);
+                        chat.addUser(userConnected);
+
+                        Message messageObj = new Message(userConnected, userToRequest, new Date(), message);
+
+                        chat.addMessage(messageObj);
+
+                        for (MessageInterface msg : chat.getMessages()) {
+                            System.out.println(msg.toString());
+                        }
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
                     }
 
                 } catch (Exception ex) {
@@ -116,5 +155,4 @@ public class ChiChatServer {
         }
 
     }
-
 }
