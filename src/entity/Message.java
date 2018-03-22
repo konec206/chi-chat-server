@@ -20,13 +20,11 @@ import java.util.logging.Logger;
 public class Message implements MessageInterface, Serializable {
 
     private UserInterface sender;
-    private UserInterface receiver;
     private Date date;
     private String content;
 
-    public Message(UserInterface sender, UserInterface receiver, Date date, String content) {
+    public Message(UserInterface sender, Date date, String content) {
         this.sender = sender;
-        this.receiver = receiver;
         this.date = date;
         this.content = content;
     }
@@ -39,16 +37,6 @@ public class Message implements MessageInterface, Serializable {
     @Override
     public void setSender(UserInterface sender) throws RemoteException {
         this.sender = sender;
-    }
-
-    @Override
-    public UserInterface getReceiver() throws RemoteException {
-        return receiver;
-    }
-
-    @Override
-    public void setReceiver(UserInterface receiver) throws RemoteException {
-        this.receiver = receiver;
     }
 
     @Override

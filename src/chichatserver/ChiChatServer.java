@@ -23,6 +23,25 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.omg.CORBA.ORB;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
+import ServerApp.UserServiceImpl;
+import ServerApp.UserService;
+import ServerApp.UserServiceHelper;
+import ServerApp.ChatServiceImpl;
+import ServerApp.ChatService;
+import ServerApp.ChatServiceHelper;
+import java.util.Properties;
+import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContextExt;
+import org.omg.CosNaming.NamingContextExtHelper;
+import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
+import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
+import org.omg.PortableServer.POAPackage.ServantNotActive;
+import org.omg.PortableServer.POAPackage.WrongPolicy;
 
 /**
  *
@@ -43,116 +62,82 @@ public class ChiChatServer {
         //BD Registry
         Registry bdRegistry = LocateRegistry.getRegistry(host, bdPort);
 
-        UserServiceInterface userServiceInterface;
+        UserServiceInterface userServiceInterface = null;
 
         try {
             userServiceInterface = (UserServiceInterface) bdRegistry.lookup("userService");
-            System.out.println("[SERVER] UserService registered...");
-
-            //Just for the tests
-            ArrayList<UserInterface> users = new ArrayList();
-            users.add(new User("root1", "fake", "user", "root"));
-            users.add(new User("root2", "fake", "user", "root"));
-            users.add(new User("root3", "fake", "user", "root"));
-            users.add(new User("root4", "fake", "user", "root"));
-            users.add(new User("root5", "fake", "user", "root"));
-            users.add(new User("root6", "fake", "user", "root"));
-
+            
+            ArrayList<UserInterface> users = new ArrayList<>();
+            users.add(new User("konec", "konec", "konec", "root"));
+            users.add(new User("konecny", "konec", "konec", "root"));
+            users.add(new User("root", "root", "root", "root"));            
             userServiceInterface.initUserRepository(users);
-
-            Scanner sc = new Scanner(System.in);
-            System.out.println("[TEST] Please authenticate (authentication gonna be client side) : ");
-
-            System.out.print("User name :\n> ");
-            String username = sc.nextLine();
-
-            System.out.print("Password :\n> ");
-            String password = sc.nextLine();
-
-            if (!userServiceInterface.authenticateUser(username, password)) {
-                System.out.println("Authentication refused " + username);
-            } else {
-                System.out.println("Authentication OK " + username);
-                UserInterface userConnected = userServiceInterface.getUser(username);
-
-                try {
-                    System.out.print("Username to request :\n> ");
-                    String usernameToRequest = sc.nextLine();
-
-                    UserInterface userToRequest = userServiceInterface.getUser(usernameToRequest);
-
-                    System.out.println("[TEST CONTACT REQUEST] " + userConnected.getUsername() + " --> " + userToRequest.getUsername());
-
-                    ContactRequest requestToSend = new ContactRequest(userConnected, userToRequest, new Date());
-
-                    userServiceInterface.sendContactRequest(requestToSend);
-
-                    System.out.println("[TEST CONTACT REQUEST] A contactRequest has been created");
-
-                    System.out.println("[TEST GET USER] Display of " + userToRequest.getUsername() + " --> contactRequests : " + userToRequest.getContactRequest().size());
-                    for (ContactRequestInterface request : userToRequest.getContactRequest()) {
-                        System.out.println(request.toString());
-                    }
-
-                    Thread.sleep(1000);
-
-                    System.out.println("[TEST ACCEPT CONTACT REQUEST]");
-
-                    userToRequest = userServiceInterface.answerToContactRequest(true, requestToSend);
-
-                    System.out.println("[TEST ACCEPT CONTACT REQUEST] Contact requests : " + userToRequest.getContactRequest().size());
-                    System.out.println("[TEST ACCEPT CONTACT REQUEST] Contact : " + userToRequest.getContacts().size());
-
-                    if (userToRequest.getContacts().size() > 0) {
-                        for (UserInterface contact : userToRequest.getContacts()) {
-                            System.out.println("Contact : " + contact.getFirstName() + " " + contact.getName());
-                        }
-                    }
-
-                    //Test Register
-                    System.out.print("[TEST REGISTER USER] Please register :\nUser name :\n> ");
-                    String newUsername = sc.nextLine();
-                    System.out.print("Name :\n> ");
-                    String name = sc.nextLine();
-                    System.out.print("FirstName :\n> ");
-                    String firstname = sc.nextLine();
-                    System.out.print("Password :\n> ");
-                    String plainPassword = sc.nextLine();
-
-                    try {
-                        userServiceInterface.createUser(new User(newUsername, name, firstname, plainPassword));
-
-                        userConnected = userServiceInterface.getUser(newUsername);
-                        System.out.print("Send message to :\n> ");
-                        usernameToRequest = sc.nextLine();
-                        userToRequest = userServiceInterface.getUser(usernameToRequest);
-
-                        System.out.print(">> ");
-                        String message = sc.nextLine();
-
-                        Chat chat = new Chat();
-                        chat.addUser(userToRequest);
-                        chat.addUser(userConnected);
-
-                        Message messageObj = new Message(userConnected, userToRequest, new Date(), message);
-
-                        chat.addMessage(messageObj);
-
-                        for (MessageInterface msg : chat.getMessages()) {
-                            System.out.println(msg.toString());
-                        }
-                    } catch (Exception ex) {
-                        System.out.println(ex.getMessage());
-                    }
-
-                } catch (Exception ex) {
-                    Logger.getLogger(ChiChatServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
+            
+            System.out.println("[SERVER] UserService registered...");
         } catch (NotBoundException | AccessException ex) {
             Logger.getLogger(ChiChatServer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        if (userServiceInterface == null) {
+            System.out.println("Bd unreachiable");
+            System.exit(0);
+        }
+
+        try {
+            // Paramétrage pour la création de la couche ORB :
+            // localisation de l'annuaire d'objet (service nommage)
+            Properties props = new Properties();
+            props.put("org.omg.CORBA.ORBInitialPort", "2000");
+            props.put("org.omg.CORBA.ORBInitialHost", "127.0.0.1");
+            
+            ORB orb = ORB.init((String []) null, props);
+           
+            // Recherche d'une reference au service "RootPOA"
+            // (Portable Object Adaptator)
+            org.omg.CORBA.Object poaRef = orb.resolve_initial_references("RootPOA");
+            // Instance du service RootPOA ("cast" sauce CORBA)
+            POA rootpoa = POAHelper.narrow(poaRef);
+            // Activation du service RootPOA
+            rootpoa.the_POAManager().activate();
+
+            org.omg.CORBA.Object serviceNommageReference;
+            serviceNommageReference = orb.resolve_initial_references("NameService");
+            
+            NamingContextExt serviceNommage = NamingContextExtHelper.narrow(serviceNommageReference);
+            
+            // Création du service et de son enveloppe (par héritage)
+            UserServiceImpl userServiceImpl = new UserServiceImpl(userServiceInterface);
+            // Creation de la référence CORBA du service auprès du POA
+            org.omg.CORBA.Object userServiceRef;
+            userServiceRef = rootpoa.servant_to_reference(userServiceImpl);
+            // Création de l'objet CORBA du service
+            UserService userService = UserServiceHelper.narrow(userServiceRef);
+            
+            // Création du service et de son enveloppe (par héritage)
+            ChatServiceImpl chatServiceImpl = new ChatServiceImpl(userServiceInterface);
+            // Creation de la référence CORBA du service auprès du POA
+            org.omg.CORBA.Object chatServiceRef;
+            chatServiceRef = rootpoa.servant_to_reference(chatServiceImpl);
+            // Création de l'objet CORBA du service
+            ChatService chatService = ChatServiceHelper.narrow(chatServiceRef);
+            
+            // Enregistrement du service (nom, objet CORBA)
+            NameComponent[] pathChat = serviceNommage.to_name("ChatService");
+            serviceNommage.rebind(pathChat, chatService);
+            NameComponent[] pathUser = serviceNommage.to_name("UserService");
+            serviceNommage.rebind(pathUser, userService);
+            // Démarrage de la couche ORB
+            orb.run();
+            
+            System.out.println("UserService and ChatService Server ready and waiting ...");
+
+        } catch (InvalidName | CannotProceed | org.omg.CosNaming.NamingContextPackage.InvalidName | NotFound | AdapterInactive | ServantNotActive | WrongPolicy e) {
+            System.err.println("ERROR: " + e);
+            e.printStackTrace(System.out);
+        }
+
+        System.out.println("Server Exiting ...");
+
     }
+
 }

@@ -17,6 +17,7 @@ import utils.Security;
  * @author thibault
  */
 public class User implements UserInterface, Serializable {
+    private static final long serialVersionUID = 9169736553607058510L;
 
     private String userName;
     private String name;
@@ -97,5 +98,10 @@ public class User implements UserInterface, Serializable {
     public void removeContactRequest(ContactRequestInterface request) throws RemoteException {
         if (this.contactRequests.contains(request))
             this.contactRequests.remove(request);
+    }
+
+    @Override
+    public void alert(String message) throws RemoteException {
+        System.out.println(message);
     }
 }

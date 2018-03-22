@@ -14,7 +14,6 @@ import java.util.ArrayList;
  * @author thibault
  */
 public interface UserInterface extends Remote {
-    
     /**
      * @return String
      * @throws java.rmi.RemoteException
@@ -74,4 +73,11 @@ public interface UserInterface extends Remote {
      * @throws RemoteException 
      */
     public void removeContactRequest(ContactRequestInterface contactRequest) throws RemoteException;
+    
+    /**
+     *
+     * @param message
+     * @throws RemoteException
+     */
+    public void alert(String message) throws RemoteException;
 }

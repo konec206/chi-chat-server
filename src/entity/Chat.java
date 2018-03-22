@@ -11,6 +11,7 @@ import interfaces.UserInterface;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -18,11 +19,14 @@ import java.util.ArrayList;
  */
 public class Chat implements ChatInterface, Serializable {
     
+    private String id;
     private ArrayList<MessageInterface> messages;
     private ArrayList<UserInterface> users;
 
-    public Chat() {
+    public Chat(UserInterface creator, boolean isPublic, String usernameReceiver) throws RemoteException {
+        this.id = isPublic ? creator.getUsername() : creator.getUsername() + "_TO_" + usernameReceiver;
         this.users = new ArrayList<>();
+        this.users.add(creator);
         this.messages = new ArrayList<>();
     }
 
@@ -70,5 +74,16 @@ public class Chat implements ChatInterface, Serializable {
         
         return true;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     
+    public void alert(Message message) {
+        System.out.println("Message : " + message.toString());
+    }   
 }

@@ -24,24 +24,10 @@ public interface MessageInterface extends Remote {
     
     /**
      * 
-     * @return
-     * @throws RemoteException 
-     */
-    public UserInterface getReceiver() throws RemoteException;
-    
-    /**
-     * 
      * @param sender
      * @throws RemoteException 
      */
     public void setSender(UserInterface sender) throws RemoteException;
-    
-    /**
-     * 
-     * @param receiver
-     * @throws RemoteException 
-     */
-    public void setReceiver(UserInterface receiver) throws RemoteException;
     
     /**
      * 

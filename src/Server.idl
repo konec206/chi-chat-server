@@ -1,0 +1,25 @@
+module ServerApp
+{    
+    interface UserService
+    {
+        boolean authenticate(in string username, in string password);
+        string register(in string username, in string password, in string name, in string firstname);
+        void newContactRequest(in string username1, in string username2);
+        string getContactsDisplay(in string username);
+        string getLastContactRequests(in string username);
+        void answerToContactRequest(in string username, in boolean answer);
+    };
+
+    interface Listener
+    {
+        void onMessageReceived(in string message);
+        void onUserDisconnected(in string message);
+    };
+
+    interface ChatService
+    {
+        boolean sendMessage(in string chatId, in string usernameSender, in string message);
+        string newChat(in string username1, in string username2, in boolean isPublic, in Listener listener);
+        string disconnect(in string username1, in string chatId, in Listener listener);
+    };
+};
