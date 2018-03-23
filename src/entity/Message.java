@@ -69,5 +69,5 @@ public class Message implements MessageInterface, Serializable {
         }
         
         return str;
-    }
+    }    
 }

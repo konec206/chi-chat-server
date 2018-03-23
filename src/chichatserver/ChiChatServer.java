@@ -68,9 +68,8 @@ public class ChiChatServer {
             userServiceInterface = (UserServiceInterface) bdRegistry.lookup("userService");
             
             ArrayList<UserInterface> users = new ArrayList<>();
-            users.add(new User("konec", "konec", "konec", "root"));
-            users.add(new User("konecny", "konec", "konec", "root"));
-            users.add(new User("root", "root", "root", "root"));            
+            //users.add(new User("konec", "konec", "konec", "root"));
+            //users.add(new User("konecny", "konec", "konec", "root"));
             userServiceInterface.initUserRepository(users);
             
             System.out.println("[SERVER] UserService registered...");

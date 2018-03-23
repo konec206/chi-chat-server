@@ -28,7 +28,7 @@ public interface MessageInterface extends Remote {
      * @throws RemoteException 
      */
     public void setSender(UserInterface sender) throws RemoteException;
-    
+   
     /**
      * 
      * @param date

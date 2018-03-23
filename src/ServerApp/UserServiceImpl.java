@@ -51,6 +51,7 @@ public class UserServiceImpl extends UserServicePOA {
         try {
             this.userService.createUser(new User(username, name, firstname, password));
         } catch (Exception ex) {
+            System.out.println("[EXCEPTION] " + ex.getMessage());
             username = "";
         }
 
